@@ -1,0 +1,204 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Polytomizator</title>
+  <link rel="shortcut icon" type="image/x-icon" href="images/websiteLogo.ico" />
+  <!--Libraries Used-->
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="local-js-css/jquery-3.3.1.min.js"></script>
+  <script src="local-js-css/popper.min.js"></script>
+  <script src="local-js-css/bootstrap.bundle.min.js"></script>
+  
+  <script src="libraries/p5.min.js"></script>
+  <script src="scripts/delaunatormin.js"></script>
+
+  <!--Local Scripts-->
+  <script language="javascript" type="text/javascript" src="scripts/poly.min.js"></script>
+  <script language="javascript" type="text/javascript" src="scripts/poly_helper.min.js"></script>
+  <script language="javascript" type="text/javascript" src="scripts/buttons.min.js"></script>
+  <script language="javascript" type="text/javascript" src="scripts/otherEffects.min.js"></script>
+  <script language="javascript" type="text/javascript" src="scripts/imagefilter.min.js"></script>
+  <script language="javascript" type="text/javascript" src="scripts/exportSVG.min.js"></script>
+  <script language="javascript" type="text/javascript" src="scripts/FileSaver.min.js"></script>
+  <script language="javascript" type="text/javascript" src="scripts/webworkerArtGen.min.js"></script>
+  <link rel="stylesheet" href="local-js-css/bootstrap.min.css">
+  <link rel="stylesheet" href="local-js-css/all.min.css">
+  <link rel="stylesheet" href="poly.min.css">
+
+</head>
+
+<body>
+  <div id="helpScreen">
+    <div id="help_text_wrapper">
+      <p class = "help_text" id="help_text0">This is a website to help quickly and easily create (low) poly art</p>
+      <p>Upload an image first</p>
+      <p>Use the tool bar below the canvas to use different tools to add and remove points on to the canvas</p>
+      <div class="tool_explanation"><i class="fa fa-pen"></i><p>Place one point</p></div>
+      <div class="tool_explanation">
+        <i class="fa fa-paint-brush"></i><p>Place several points</p>
+      </div>
+      <div class="tool_explanation">
+        <i class="fa fa-eraser"></i><p>Erase points</p>
+      </div>
+      <p style="display:inline;">Explore other options by clicking this gear at the top right </p><i class="fa fa-cog" style="display:inline;line-height: 70px;"></i>
+      <p>Save the current work or load previous work with the 'save/load canvas' buttons</p>
+      <p>Hide/Show points, the colors, the triangles, and the image with the buttons below the toolbar</p>
+      <p>Click Polytomize (or press the D key) to make the poly art</p>
+      <p>(Click to proceed to making poly art)</p>
+    </div>
+    
+  </div>
+  <div id="loadingScreen">
+    <h1 id="loadingText" style="position: fixed;text-align: center;width: 100%;">Loading Content<img src="images/loadingSymbol.gif" style="margin-left: 10px" width="32px" height="auto"></h1>
+  </div>
+  <div class='flex-container'>
+    <h1 style="margin-top:10px;font-size:60px;">Polytomizator</h1>
+    <h3 style="width:70%;margin-left:15%;margin-bottom:20px;margin-top: 20px;">Add points with the brushes. Then click polytomize to make art! Then download the poly art as a high quality image or SVG.</h3>
+    <h5 style="font-size:15px;margin-bottom: 30px;width:80%;margin-left:10%;padding-bottom: 50px; border-bottom: 2px solid RGB(40,40,40)">It is <b>highly highly</b> suggested to use Firefox for maximum experience.</h5>
+    <h3 id="uploadText">Upload your own image to work with here:</h3>
+    <div class="custom-file" id="images-file-div" style="width:485px;margin-bottom:30px;">
+      <input type="file" class="custom-file-input" id="file" accept="image/*">
+      <label class="custom-file-label" for="file" id="label_file" style="padding-right:78.333333px">Choose images...</label>
+    </div>
+    <div id="download_elements">
+      <button type="button" id="downloadSVG" class="btn btn-dark">Download poly art as an SVG file</button><button type="button" id="expandImage" class="btn btn-dark" data-toggle="tool-tip" data-toggle="tooltip" data-placement="top" data-title="Download the poly art in extremely high detail">Download poly art as an image (png)</button>
+    </div>
+    <div class="main">
+      <div id="gamedisplay"></div>
+    </div>
+    <div id="options_menu_gear"><i class="fa fa-cog"></i></div>
+    <div id="options_menu">
+      <h4 style="border:none">Options</h4>
+      <table id="options_table" style="width:100%;">
+        <tr class="option_input_title_tr">
+          <td></td>
+          <td></td>
+          <td class="option_input_title">Accuracy</td>
+        </tr>
+        <tr>
+          <td class="option_name">Grid</td>
+          <td><input type="checkbox" style="" id="display_grid"></td>
+          <td class="inputs"><input type="text" class="form-control" id="grid_accuracy" placeholder="≥ 2" style="width: 100px;"></td>
+        </tr>
+        <tr class="option_input_title_tr">
+        </tr>
+        <tr>
+          <td class="option_name">Snap to grid</td>
+          <td><input type="checkbox" style="height:auto;" id="snapping"></td>
+          <td class="inputs"></td>
+        </tr>
+        <tr class="option_input_title_tr">
+          <td></td>
+          <td></td>
+          <td class="option_input_title">Speed</td>
+        </tr>
+        <tr>
+          <td class="option_name">Flower effect</td>
+          <td><input type="checkbox" style="height:auto;" id="flower_effect"></td>
+          <td class="inputs"><input class="form-control" type="text" id="flower_effect_speed" placeholder="≥ 1" style="width: 100px;"></td>
+        </tr>
+        <tr class="option_input_title_tr">
+        </tr>
+        <tr>
+          <td class="option_name">Display mode</td>
+          <td><input type="checkbox" style="height:auto;" id="display_mode_check"></td>
+          <td class="inputs" style="height:20px;">
+            <select class="custom-select" id="display_mode_selection" style="border:none; width:100px;padding:0 1.75rem 0 .75rem">
+              <option value="circles">Circles</option>
+              <option value="rectangles">Rectangles</option>
+              <option value="distorted_triangles">Distorted</option>
+            </select>
+          </td>
+        </tr>
+        <tr class="option_input_title_tr">
+        </tr>
+        <tr>
+          <td class="option_name">Display stats</td>
+          <td><input type="checkbox" style="height:auto;" id="stats_mode_check"></td>
+        </tr>
+        <tr class="option_input_title_tr">
+          <td></td>
+          <td></td>
+          <td class="option_input_title">Size (Megapixels)</td>
+        </tr>
+        <tr>
+          <td class="option_name" style="height:40px;line-height: 20px;">Downloaded<br>Image Size</td>
+          <td></td>
+          <td class="inputs"><input class="form-control" type="text" id="downloaded_poly_size" style="width: 100px;"></td>
+        </tr>
+      </table>
+      <h4 style="">Functions</h4>
+      <div id="function_options">
+        <button class="btn btn-light" id="displaysnapvertices">Snap Vertices</button>
+        <button class="btn btn-light" id="displaygencubicpoly">Generate cubic poly art</button>
+        <button class="btn btn-light" id="displaygennormalpoly">Generate normal poly art</button>
+        <button class="btn btn-light" id="increase_canvas" onclick="resize_poly_canvas(1.2)">Increase Canvas Size</button>
+        <button class="btn btn-light" id="decrease_canvas" onclick="resize_poly_canvas(1/1.2)">Decrease Canvas Size</button>
+
+      </div>
+
+    </div>
+    <div id="options_menu_additional">
+    </div>
+    <div class="brushes noselect">
+      <ul style="padding:0px;">
+        <button id="pointBrush" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" data-title="Pen: Place one point (P)" data-delay='1000'><i class="fa fa-pen"></i></button>
+        <button id="lineBrush" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" data-title="Brush: Place multiple points at once (B)" data-delay='1000'><i class="fa fa-paint-brush"></i></button>
+        <button id="eraser" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" data-title="Eraser: Erase points (E)" data-delay='1000'><i class="fa fa-eraser"></i></button>
+        <li id="sizing1" data-toggle="tooltip" data-placement="top" data-title="Size of brush and eraser" data-delay='1000'>Brush Size<input id="brushSize" class="form-control" type="text" placeholder="100"></li>
+        <li id="sizing2" data-toggle="tooltip" data-placement="top" data-title="Number of points placed with brush at once" data-delay='1000'>Brush Density<input id="brushDensity" type="text" class="form-control" placeholder="5"></li>
+        <button id="undo" class="btn btn-dark" style="vertical-align: top;line-height: 25px" onclick="undo()" data-toggle="tooltip" data-placement="top" data-title="Undo the last step (Cmd + Z)" data-delay='1000'><i class="fas fa-undo-alt"></i></button>
+        <button id="redo" class="btn btn-dark" style="vertical-align: top;line-height: 25px" onclick="redo()" data-toggle="tooltip" data-placement="top" data-title="Redo the next step (Cmd + Shift + Z)" data-delay='1000'><i class="fas fa-redo-alt"></i></button>
+        <button id="saveThis" class="btn btn-dark" data-toggle="tooltip" data-placement="top" data-title="Save the vertices for this canvas for next time" data-delay='1000'>Save<br>canvas</button>
+        <button id="loadThis" class="btn btn-dark" data-toggle="tooltip" data-placement="top" data-title="Load previously saved vertices. NOTE: It is best this is done on the same image used last time" data-delay='1000'>Load<br>canvas</button>
+
+      </ul>
+    </div>
+    <div>
+      <button id="polytomize" class="btn btn-dark" data-toggle="tooltip" title="Triangulize the canvas and color it in (D)" data-delay="1000">Polytomize</button>
+    </div>
+    <div class="noselect" style="display:inline-block;">
+      <div class="buttonRow">
+        <ul id="buttonList" style="padding:0;">
+          <button id="displayPoints" class="btn btn-outline-dark">Hide<br>Points</button>
+          <button id="displayColor" class="btn btn-outline-dark">Hide<br>Colors</button>
+          <button id="displayTriangulation" class="btn btn-outline-dark">Hide<br>Triangles</button>
+          <button id="displayImage" class="btn btn-outline-dark">Hide<br>Image</button>
+        </ul>
+      </div>
+
+    </div>
+    
+    <div id="stats_for_nerds" style="margin-top:50px;">
+      <h3 id="statsHeader">Some stats for nerds</h3>
+      <table id="stats_for_nerds_table">
+        <tr>
+          <th>Metric</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Vertices</td>
+          <td id="numberPoints">0</td>
+        </tr>
+        <tr>
+          <td>Triangles</td>
+          <td id="numberTriangles">0</td>
+        </tr>
+        <tr style="border-bottom:5px solid #343a40;">
+          <td>Time taken to color last canvas</td>
+          <td id="lastTiming">0.000</td>
+        </tr>
+      </table>
+    </div>
+    <div class="otherInfo" style="margin-top:50px;">
+      <h5>Created with HTML, CSS, Bootstrap, p5.js</h5>
+    </div>
+  </div>
+  <div class="footer">
+    <span style="margin-right:4px;">By Stone T. @ Github</span><a href="https://github.com/StoneT2000"><i class="fab fa-github"></i></a><span style="border-right: 1px solid #212529;margin:0px 10px 0px 10px;"></span><span style="margin-right:4px;">Email</span><a href="mailto:stoneztao@gmail.com"><i class="fa fa-envelope"></i></a>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "polytomizator",
+  "version": "1.0.0",
+  "description": "A small app that helps generate low-poly art.",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "poly",
+    "art"
+  ],
+  "author": "StoneT2000",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^2.0.9"
+  }
+}
