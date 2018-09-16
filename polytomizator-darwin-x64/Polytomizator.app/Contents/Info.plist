@@ -5,9 +5,9 @@
     <key>BuildMachineOSBuild</key>
     <string>16G1510</string>
     <key>CFBundleDisplayName</key>
-    <string>polytomizator</string>
+    <string>Polytomizator</string>
     <key>CFBundleExecutable</key>
-    <string>polytomizator</string>
+    <string>Polytomizator</string>
     <key>CFBundleIconFile</key>
     <string>electron.icns</string>
     <key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>polytomizator</string>
+    <string>Polytomizator</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

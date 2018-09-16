@@ -7,7 +7,7 @@
     <key>CFBundleIdentifier</key>
     <string>com.electron.polytomizator.helper</string>
     <key>CFBundleName</key>
-    <string>polytomizator</string>
+    <string>Polytomizator</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>DTSDKBuild</key>
@@ -23,8 +23,8 @@
     <key>NSSupportsAutomaticGraphicsSwitching</key>
     <true/>
     <key>CFBundleDisplayName</key>
-    <string>polytomizator Helper</string>
+    <string>Polytomizator Helper</string>
     <key>CFBundleExecutable</key>
-    <string>polytomizator Helper</string>
+    <string>Polytomizator Helper</string>
   </dict>
 </plist>
